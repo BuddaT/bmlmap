@@ -3,7 +3,6 @@ package net.bdew.wurm.bmlmap;
 import org.gotti.wurmunlimited.mods.httpserver.api.ModHttpServer;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,12 +20,7 @@ public class HttpHandler {
 
     public static InputStream handle(String url) {
         log.info(String.format("Req for :%s", url));
-        BufferedImage img = new BufferedImage(512, 512, BufferedImage.TYPE_3BYTE_BGR);
-        Graphics gfx = img.getGraphics();
-        gfx.setColor(Color.WHITE);
-        gfx.fillRect(0, 0, 512, 512);
-        gfx.setColor(Color.BLACK);
-        gfx.drawString("Hi i was drawn on the server!", 10, 10);
+        BufferedImage img = MapRender.createMapDump(500, 500, 256, 256);
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             ImageIO.write(img, "png", bos);
             return new ByteArrayInputStream(bos.toByteArray());

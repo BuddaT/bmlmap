@@ -1,5 +1,6 @@
 package net.bdew.wurm.bmlmap;
 
+import com.wurmonline.server.Server;
 import com.wurmonline.server.ServerEntry;
 import com.wurmonline.server.Servers;
 import com.wurmonline.server.creatures.Creature;
@@ -28,9 +29,15 @@ public class TestWindow implements ModQuestion {
     public void sendQuestion(Question question) {
         BMLBuilder bml = BMLBuilder.createNoQuestionWindow(String.valueOf(question.getId()),
                 BMLBuilder.createGenericBuilder()
-                        .addImage(HttpHandler.addr.resolve("test.png").toString(), 512, 512)
+                        .addText("")
+                        .addString(
+                                BMLBuilder.createCenteredNode(
+                                        BMLBuilder.createGenericBuilder()
+                                                .addImage(HttpHandler.addr.resolve(String.format("%d.png", Server.rand.nextInt())).toString(), 256, 256)
+                                ).toString()
+                        )
         );
-        responder.getCommunicator().sendBml(300, 370, true, false, bml.toString(), 200, 200, 200, question.getTitle());
+        responder.getCommunicator().sendBml(300, 320, true, true, bml.toString(), 200, 200, 200, question.getTitle());
     }
 
     private static Stream<ServerEntry> getServers(Player player) {
@@ -38,8 +45,7 @@ public class TestWindow implements ModQuestion {
                 .filter(server -> !server.entryServer && server != Servers.localServer && server.isAvailable(player.getPower(), true));
     }
 
-    public static boolean send(Creature creature) {
+    public static void send(Creature creature) {
         ModQuestions.createQuestion(creature, "Test image", "", -10, new TestWindow(creature)).sendQuestion();
-        return true;
     }
 }
